@@ -1,0 +1,51 @@
+# --- Dependencias ---
+node_modules/
+jspm_packages/
+
+# --- Logs y Debugging ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# --- Variables de Entorno (SEGURIDAD) ---
+.env
+.env.test
+.env.production
+.env.local
+.env.*.local
+
+# --- Directorios de Compilación/Salida ---
+dist/
+build/
+out/
+.next/
+.nuxt/
+bin/
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Testing y Cobertura ---
+coverage/
+.nyc_output/
+
+# --- Configuración de VS Code ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+*.code-workspace
+
+# --- Archivos del Sistema Operativo ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Otros ---
+.eslintcache
+.stylelintcache
+package-lock.json

@@ -14,9 +14,28 @@ app.set('view engine', 'ejs');
 // Establecer la carpeta publica con elementos estáticos
 app.use(express.static('public'));
 
-// 4. Crear la primera "Ruta" cuando el usuario ingrese a la raiz de nuestra app
+// -- RUTAS --
 app.get('/', (req, res) => {
-    res.send('<h1>Servidor de E-commerce Iniciado</h1><p>NPM y Express funcionando...</p>');
+    // Simular una lista de productos
+    const listaProductos = [
+        {
+            nombre: "Laptop Pro",
+            precio: 850,
+            imagen: "https://dummyimage.com/200x200/000/fff&text=Laptop"
+        },
+        {
+            nombre: "Audifonos Sony",
+            precio: 125,
+            imagen: "https://dummyimage.com/200x200/000/fff&text=Audifonos"
+        },
+        {
+            nombre: "Mouse ergonómico",
+            precio: 50,
+            imagen: "https://dummyimage.com/200x200/000/fff&text=Mouse"
+        }
+    ];
+    // Renderizar la plantilla con los datos proporcionados
+    res.render('index', {productos: listaProductos}); 
 });
 
 // 5. Encender el servidor

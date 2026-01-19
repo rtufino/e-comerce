@@ -1,5 +1,8 @@
 // 1. Importar la librería para crear aplicaciones Web
 const express = require('express');
+const mongoose = require('mongoose');
+// Importar el modelo de Producto
+const Producto = require('./models/Producto');
 
 // 2. Crear una instacia de express (aplicación principal)
 const app = express();
@@ -14,43 +17,16 @@ app.set('view engine', 'ejs');
 // Establecer la carpeta publica con elementos estáticos
 app.use(express.static('public'));
 
-// Simular una lista de productos
-const listaProductos = [
-    {
-    nombre: "Laptop Pro",
-    precio: 850,
-    categoria: "computadores",
-    imagen: "https://dummyimage.com/200x200/000/fff&text=Laptop"
-},
-{
-    nombre: "PC Desktop Gamer",
-    precio: 1200,
-    categoria: "computadores",
-    imagen: "https://dummyimage.com/200x200/000/fff&text=PC+Gamer"
-},
-{
-    nombre: "Audifonos Sony",
-    precio: 125,
-    categoria: "perifericos",
-    imagen: "https://dummyimage.com/200x200/000/fff&text=Audifonos"
-},
-{
-    nombre: "Mouse ergonómico",
-    precio: 50,
-    categoria: "perifericos",
-    imagen: "https://dummyimage.com/200x200/000/fff&text=Mouse"
-},
-{
-    nombre: "Teclado Mecánico",
-    precio: 80,
-    categoria: "perifericos",
-    imagen: "https://dummyimage.com/200x200/000/fff&text=Teclado"
-}
-];
-
+// ---- CONEXION CON MONGODB ----
+mongoose.connect('mongodb://127.0.0.1:27017/tienda')
+    .then(() => console.log("[ OK ] Conectado a MongoDB local"))
+    .catch(err => console.log("[FAIL] Error de conexión:", err));
 
 // -- RUTAS --
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    // Consultamos la base de datos EN CADA petición
+    const listaProductos = await Producto.find();
+
     // Renderizar la plantilla con los datos proporcionados
     res.render('index', { 
         productos: listaProductos, 
@@ -59,17 +35,20 @@ app.get('/', (req, res) => {
 });
 
 // Ruta dinámica para categorías
-app.get('/categoria/:nombreCategoria', (req, res) => {
+app.get('/categoria/:nombreCategoria', async (req, res) => {
     const cat = req.params.nombreCategoria;
     
-    // Filtramos el arreglo según la categoría de la URL
-    const productosFiltrados = listaProductos.filter(
-        p => p.categoria === cat);
-    
-    res.render('index', { 
-        productos: productosFiltrados, 
-        titulo: cat.charAt(0).toUpperCase() + cat.slice(1) // Para poner la primera letra en mayúscula
-    });
+    try {
+        // Dejamos que MongoDB haga el filtro (más eficiente)
+        const productosFiltrados = await Producto.find({ categoria: cat });
+        
+        res.render('index', { 
+            productos: productosFiltrados, 
+            titulo: cat.charAt(0).toUpperCase() + cat.slice(1)
+        });
+    } catch (error) {
+        res.status(500).send("Error al filtrar categorías");
+    }
 });
 
 // 5. Encender el servidor
